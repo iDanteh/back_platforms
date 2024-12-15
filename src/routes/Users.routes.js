@@ -1,0 +1,13 @@
+import {Router} from 'express';
+import { getUsers, getUserById, registerUser, updateUser, deleteUser } from '../controllers/Users.Controllers.js';
+
+const router = Router();
+
+router.get('/api/v1/', (req, res) => {res.send('Ruta funcionando');});
+router.get('/api/v1/users', getUsers);
+router.post('/api/v1/users/register', registerUser);
+router.get('/api/v1/users/:id_User', getUserById);
+router.put('/api/v1/users/:id_User', updateUser);
+router.delete('/api/v1/users/:id_User', deleteUser);
+
+export default router
