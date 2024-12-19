@@ -31,7 +31,27 @@ Suscription.init({
         },
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
-    },    
+    },
+    type_suscription: {
+        type: DataTypes.STRING(50),
+        allowNull: false
+    },
+    start_date: {
+        type: DataTypes.DATE,
+        allowNull: false,
+    },
+    finish_date: {
+        type: DataTypes.DATE,
+        allowNull: false,
+    },
+    state: {
+        type: DataTypes.STRING(10),
+        allowNull: false,
+        validate: {
+            isIn: [['Activo', 'Inactivo', 'Cancelado']],
+        },
+    },
+    
 },
 {
     sequelize,
