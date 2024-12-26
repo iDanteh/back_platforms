@@ -6,9 +6,11 @@ import adminRoutes from './routes/Admin.routes.js';
 import platformRoutes from './routes/Platform.routes.js';
 import suscriptionRoutes from './routes/Suscription.routes.js';
 import morgan from 'morgan';
+import cors from 'cors';
 
 const app = express();
 
+app.use(cors());
 app.use(express.urlencoded({ extended: false}));
 app.use(morgan('dev'));
 app.use(express.json());
