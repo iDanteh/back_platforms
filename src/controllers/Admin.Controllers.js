@@ -18,11 +18,12 @@ export const getAdminById = async(req, res) =>{
 export const login = async (req, res) => {
     try {
         const {email, password} = req.body;
+        console.log(req.body);
 
         // Buscar el correo del administrador
         const admin = await Administrador.findOne({ where: {email: email}});
         if(!admin){
-            res.status(404).json({ error: 'Administrador no existente'});
+            return res.status(404).json({ error: 'Administrador no existente'});
         }
 
         // Verificar contraseña encriptada
@@ -31,10 +32,10 @@ export const login = async (req, res) => {
             return res.status(401).json({ error: 'Contraseña incorrecta' });
         }
 
-        res.status(200).json({admin});
+        return res.status(200).json({admin});
 
     } catch (error) {
-        res.status(500).json({error: 'Error al iniciar sesión'})
+        return res.status(500).json({error: 'Error al iniciar sesión'})
     }
 }
 
