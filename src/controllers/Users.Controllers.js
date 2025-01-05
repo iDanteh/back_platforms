@@ -25,7 +25,7 @@ export const getUserById = async(req, res) =>{
 
 export const registerUser = async (req, res) => {
     try {
-        const { name_user, email, phone_user } = req.body;
+        const { nombre_user, apellido_pat, apellido_mat, phone_user, email, password } = req.body;
         console.log(req.body);
         
         // Verificar si el usuario ya existe
@@ -35,7 +35,7 @@ export const registerUser = async (req, res) => {
         }
         
         // Crear el nuevo usuario
-        const newUser = await Users.create({ name_user, phone_user, email });
+        const newUser = await Users.create({ nombre_user, apellido_pat, apellido_mat, phone_user, email, password });
 
         await History.create({
             fk_User: newUser.id_User,
@@ -70,10 +70,13 @@ export const updateUser = async (req, res) =>{
         if(!users){
             return res.status(404).json({ error: 'Usuario no encontrado'});
         }
-        const {name_user, phone_user, email} = req.body;
-        users.name_user = name_user;
+        const {nombre_user, apellido_pat, apellido_mat, phone_user, email, password} = req.body;
+        users.nombre_user = nombre_user;
+        users.apellido_pat = apellido_pat;
+        users.apellido_mat = apellido_mat;
         users.phone_user = phone_user;
         users.email = email;
+        users.password = password;
         await users.save();
         res.status(200).json({ message: 'Usuario actualizado'});
     } catch (error) {

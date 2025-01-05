@@ -10,7 +10,15 @@ Users.init({
         autoIncrement: true,
         primaryKey: true,
     },
-    name_user: {
+    nombre_user: {
+        type: DataTypes.STRING(50),
+        allowNull: false,
+    },
+    apellido_pat: {
+        type: DataTypes.STRING(50),
+        allowNull: false,
+    },
+    apellido_mat: {
         type: DataTypes.STRING(50),
         allowNull: false,
     },
@@ -23,6 +31,10 @@ Users.init({
         type: DataTypes.STRING(200),
         allowNull: false,
         unique: true
+    },
+    password: {
+        type: DataTypes.STRING(200),
+        allowNull: false,
     },
 },
 {
