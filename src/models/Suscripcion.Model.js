@@ -4,10 +4,10 @@ import Platform from './Platform.Model.js'
 import sequelize from '../database/conexion.js';
 
 // Clase para crear el modelo de las suscripciones
-class Suscription extends Model{}
+class Subscription extends Model{}
 
-Suscription.init({
-    id_Suscription: {
+Subscription.init({
+    id_Subscription: {
         type: DataTypes.INTEGER,
         primaryKey: true, 
         autoIncrement: true,
@@ -32,6 +32,14 @@ Suscription.init({
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
     },
+    perfil: {
+        type: DataTypes.STRING(50),
+        allowNull: false
+    },
+    password: {
+        type: DataTypes.STRING(50),
+        allowNull: false
+    },
     type_suscription: {
         type: DataTypes.STRING(50),
         allowNull: false
@@ -55,9 +63,9 @@ Suscription.init({
 },
 {
     sequelize,
-    modelName: 'Suscription',
+    modelName: 'Subscription',
     freezeTableName: true,
-    tableName: 'suscription',
+    tableName: 'subscription',
     timestamps: false,
 }
 );
@@ -68,4 +76,4 @@ sequelize.sync().then(() => {
     console.log('Error al crear la tabla de suscription');
 });
 
-export default Suscription;
+export default Subscription;

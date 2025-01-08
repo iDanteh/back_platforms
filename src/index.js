@@ -5,6 +5,7 @@ import usersRoutes from './routes/Users.routes.js';
 import adminRoutes from './routes/Admin.routes.js';
 import platformRoutes from './routes/Platform.routes.js';
 import suscriptionRoutes from './routes/Suscription.routes.js';
+import WhatsAppRoutes from './routes/WhatsApp.routes.js';
 import morgan from 'morgan';
 import cors from 'cors';
 
@@ -14,6 +15,7 @@ app.use(cors());
 app.use(express.urlencoded({ extended: false}));
 app.use(morgan('dev'));
 app.use(express.json());
+app.use(WhatsAppRoutes);
 app.use(usersRoutes);
 app.use(adminRoutes);
 app.use(platformRoutes);

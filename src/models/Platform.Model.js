@@ -14,9 +14,9 @@ Platform.init({
         type: DataTypes.STRING(50),
         allowNull: false,
     },
-    logo_platform: {
-        type: DataTypes.STRING(200),
-        allowNull: true
+    price: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false,
     },
 },
 {

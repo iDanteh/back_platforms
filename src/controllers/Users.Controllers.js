@@ -1,5 +1,6 @@
 import Users from '../models/User.Model.js';
 import History from '../models/History.Model.js';
+import { Op } from 'sequelize';
 
 export const getUsers =  async (req, res) => {
     try {
@@ -20,6 +21,31 @@ export const getUserById = async(req, res) =>{
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: 'Error al obtener el usuario'});
+    }
+};
+
+export const getUserByName = async (req, res) => {
+    try {
+        const { name } = req.query;
+
+        // Realiza una búsqueda parcial utilizando Sequelize
+        const users = await Users.findAll({
+            where: {
+                nombre_user: {
+                    [Op.like]: `%${name}%`
+                }
+            }
+        });
+
+        // Si no se encuentran usuarios, devuelve un array vacío
+        if (!users.length) {
+            return res.json([]);
+        }
+
+        res.status(200).json(users);
+    } catch (error) {
+        console.error('Error al buscar usuarios:', error);
+        res.status(500).json({ message: 'Error interno del servidor' });
     }
 };
 

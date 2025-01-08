@@ -15,7 +15,7 @@ export const getSuscriptions = async (req, res) => {
 
 export const getSuscripcionById = async (req, res) => {
     try {
-        const suscription = await Suscripcion.findByPk(req.params.id_Suscription);
+        const suscription = await Suscripcion.findByPk(req.params.id_Subscription);
 
         if(!suscription){
             res.status(404).json({ error: 'Suscripción no encontrada'});
@@ -55,7 +55,7 @@ export const registerSuscripcion = async (req, res) => {
         await History.create({
             fk_User: fk_user,
             fk_Platform: fk_Platform,
-            fk_Suscription: nuevaSuscripcion.id_Suscription,
+            fk_Suscription: nuevaSuscripcion.id_Subscription,
             fk_Admin: null,
         });
 
@@ -71,10 +71,10 @@ export const registerSuscripcion = async (req, res) => {
 
 export const updateSuscripcion = async (req, res) => {
     try {
-        const { id_Suscription } = req.params;
+        const { id_Subscription } = req.params;
         const { type_suscription, start_date, finish_date, state } = req.body;
 
-        const suscripcion = await Suscripcion.findByPk(id_Suscription);
+        const suscripcion = await Suscripcion.findByPk(id_Subscription);
 
         if (!suscripcion) {
             return res.status(404).json({ error: 'Suscripción no encontrada' });
@@ -90,7 +90,7 @@ export const updateSuscripcion = async (req, res) => {
         await History.create({
             fk_User: suscripcion.fk_user,
             fk_Admin: null,
-            fk_Suscripcion: id_Suscription,
+            fk_Suscripcion: id_Subscription,
             fk_Platform: suscripcion.fk_Platform,
         });
 
@@ -103,9 +103,9 @@ export const updateSuscripcion = async (req, res) => {
 
 export const deleteSuscripcion = async (req, res) => {
     try {
-        const { id_Suscription } = req.params;
+        const { id_Subscription } = req.params;
 
-        const suscripcion = await Suscripcion.findByPk(id_Suscription);
+        const suscripcion = await Suscripcion.findByPk(id_Subscription);
 
         if (!suscripcion) {
             return res.status(404).json({ error: 'Suscripción no encontrada' });
@@ -117,7 +117,7 @@ export const deleteSuscripcion = async (req, res) => {
         await History.create({
             fk_User: suscripcion.fk_user,
             fk_Admin: null,
-            fk_Suscripcion: id_Suscription,
+            fk_Suscripcion: id_Subscription,
             fk_Platform: suscripcion.fk_Platform,
         });
 

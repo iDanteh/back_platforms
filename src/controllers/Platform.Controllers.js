@@ -25,7 +25,7 @@ export const getPlatformById = async (req, res) => {
 
 export const registerPlatform = async (req, res) => {
     try {
-        const {name_platform, logo_platform} = req.body;
+        const {name_platform, price} = req.body;
 
         // Verificar si la plataforma no existe
         const plataforma = await Platform.findOne({ where: { name_platform } });
@@ -38,7 +38,7 @@ export const registerPlatform = async (req, res) => {
 
         const newPlatform = await Platform.create({
             name_platform: name_Upper,
-            logo_platform
+            price
         });
 
         await History.create({
@@ -75,9 +75,9 @@ export const updatePlatform = async (req, res) => {
         if(!plataforma){
             return res.status(404).json({ error: 'Plataforma no encontrada'});
         }
-        const {name_platform, logo_platform} = req.body;
+        const {name_platform, price} = req.body;
         plataforma.name_platform = name_platform;
-        plataforma.logo_platform = logo_platform;
+        plataforma.price = price;
         await plataforma.save();
         res.status(200).json({ message: 'Plataforma actualizada'});
     } catch (error) {
