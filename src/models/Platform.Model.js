@@ -14,10 +14,6 @@ Platform.init({
         type: DataTypes.STRING(50),
         allowNull: false,
     },
-    price: {
-        type: DataTypes.DECIMAL(10, 2),
-        allowNull: false,
-    },
 },
 {
     sequelize,

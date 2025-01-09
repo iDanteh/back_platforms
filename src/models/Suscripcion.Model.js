@@ -40,10 +40,6 @@ Subscription.init({
         type: DataTypes.STRING(50),
         allowNull: false
     },
-    type_suscription: {
-        type: DataTypes.STRING(50),
-        allowNull: false
-    },
     start_date: {
         type: DataTypes.DATE,
         allowNull: false,

@@ -28,7 +28,7 @@ export const getSuscripcionById = async (req, res) => {
 
 export const registerSuscripcion = async (req, res) => {
     try {
-        const { fk_user, fk_Platform, type_suscription, start_date, finish_date, state } = req.body;
+        const { fk_user, fk_Platform, perfil, password, start_date, finish_date, state } = req.body;
 
         // Verificar que el usuario existe
         const usuario = await Cliente.findByPk(fk_user);
@@ -45,7 +45,8 @@ export const registerSuscripcion = async (req, res) => {
         const nuevaSuscripcion = await Suscripcion.create({
             fk_user,
             fk_Platform,
-            type_suscription,
+            perfil,
+            password,
             start_date,
             finish_date,
             state,
@@ -72,7 +73,7 @@ export const registerSuscripcion = async (req, res) => {
 export const updateSuscripcion = async (req, res) => {
     try {
         const { id_Subscription } = req.params;
-        const { type_suscription, start_date, finish_date, state } = req.body;
+        const { perfil, password, start_date, finish_date, state } = req.body;
 
         const suscripcion = await Suscripcion.findByPk(id_Subscription);
 
@@ -80,7 +81,8 @@ export const updateSuscripcion = async (req, res) => {
             return res.status(404).json({ error: 'Suscripción no encontrada' });
         }
 
-        suscripcion.type_suscription = type_suscription || suscripcion.type_suscription;
+        suscripcion.perfil = perfil || suscripcion.perfil;
+        suscripcion.password = password || suscripcion.password;
         suscripcion.start_date = start_date || suscripcion.start_date;
         suscripcion.finish_date = finish_date || suscripcion.finish_date;
         suscripcion.state = state || suscripcion.state;

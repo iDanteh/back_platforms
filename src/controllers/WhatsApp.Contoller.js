@@ -1,11 +1,11 @@
 import axios from 'axios';
 
 const WHATSAPP_API_URL = 'https://graph.facebook.com/v21.0/526824780520450/messages';
-const ACCESS_TOKEN = 'EAAhFm8wkL5kBOwQGYKw0WQJaQg0Rr2yaL3EZAVRux0kjvGdU8aStRxbqQhQabgiZC3TMsZBnq5UDZBNjEZAruhaPR6jEoC3IojhZB0nZAxMZAN8uBHZAnvOtkcnn00fSZBP1KsedrwX6tHEAD9GIeMYsIcwpVddtBM5ey3ZAsZARAkvPLGOAbsV6fUkqKKVWxh5mqC4GtU097GM8jQZAulqnQYmzZAm5V9x3iu';
+const ACCESS_TOKEN = 'EAAhFm8wkL5kBOZCauNhZAMKZCOPccFg3j8LRSr00OOUd46SKIaXJCXD4dWfLWsZAWBdKQ0ujYB19qTssSkoPGCP2iGRwIXVVGPYG27cCu4c0w4gSlh0pKj1ZBQVe4NYdFLV3SmgXdVkPWDLFB5To9kGwqnQpgFJbbIFdhhdvSr3ZAQNRVoUJZAg8fnMAhP1I4OM7uwzh259ZBK4pi0KZCcMf36VZBkukcZD';
 
 export const sendWhatsAppMessage = async (req, res) => {
     try {
-        const { phoneNumber, accountName, email, password } = req.body;
+        const { phoneNumber, nombre, correo, contrasenia } = req.body;
 
         const response = await axios.post(
             WHATSAPP_API_URL,
@@ -20,32 +20,32 @@ export const sendWhatsAppMessage = async (req, res) => {
                         {
                             type: 'body',
                             parameters: [
-                                { type: 'text', text: accountName },
-                                { type: 'text', text: email },
-                                { type: 'text', text: password },
+                                { type: 'text', text: nombre },
+                                { type: 'text', text: correo },
+                                { type: 'text', text: contrasenia }
                             ]
                         }
                     ]
-                },
+                }
             },
             {
                 headers: {
                     Authorization: `Bearer ${ACCESS_TOKEN}`,
-                    'Content-Type': 'application/json',
-                },
+                    'Content-Type': 'application/json'
+                }
             }
         );
 
         res.status(200).json({
             success: true,
             message: 'Mensaje enviado correctamente',
-            data: response.data,
+            data: response.data
         });
     } catch (error) {
         res.status(500).json({
             success: false,
             message: 'Error al enviar el mensaje',
-            error: error.response ? error.response.data : error.message,
+            error: error.response ? error.response.data : error.message
         });
     }
 };
