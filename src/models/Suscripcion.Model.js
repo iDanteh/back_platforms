@@ -63,6 +63,10 @@ Subscription.init({
         type: DataTypes.STRING(50),
         allowNull: false
     },
+    name_user: {
+        type: DataTypes.STRING(50),
+        allowNull: false,
+    },
 },
 {
     sequelize,
