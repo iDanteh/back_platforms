@@ -55,7 +55,14 @@ Subscription.init({
             isIn: [['Activo', 'Inactivo', 'Cancelado']],
         },
     },
-    
+    phone_user: {
+        type: DataTypes.STRING(15),
+        allowNull: false,
+    },
+    platform: {
+        type: DataTypes.STRING(50),
+        allowNull: false
+    },
 },
 {
     sequelize,

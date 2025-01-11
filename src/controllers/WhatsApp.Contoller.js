@@ -1,51 +1,65 @@
-import axios from 'axios';
+import pkg from 'whatsapp-web.js';
+import qrcode from 'qrcode-terminal';
 
-const WHATSAPP_API_URL = 'https://graph.facebook.com/v21.0/526824780520450/messages';
-const ACCESS_TOKEN = 'EAAhFm8wkL5kBOZCauNhZAMKZCOPccFg3j8LRSr00OOUd46SKIaXJCXD4dWfLWsZAWBdKQ0ujYB19qTssSkoPGCP2iGRwIXVVGPYG27cCu4c0w4gSlh0pKj1ZBQVe4NYdFLV3SmgXdVkPWDLFB5To9kGwqnQpgFJbbIFdhhdvSr3ZAQNRVoUJZAg8fnMAhP1I4OM7uwzh259ZBK4pi0KZCcMf36VZBkukcZD';
+const { Client, LocalAuth } = pkg;
 
+// Configuración del cliente con LocalAuth
+const client = new Client({
+  authStrategy: new LocalAuth({
+    clientId: 'backend_platforms',
+  }),
+  puppeteer: {
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  },
+});
+
+// Inicializar cliente de WhatsApp
+client.initialize();
+
+// Mostrar QR en formato gráfico en la terminal
+client.on('qr', (qr) => {
+  console.log('📱 Escanea el siguiente código QR para iniciar sesión:');
+  qrcode.generate(qr, { small: true }); // Genera un QR escaneable en la terminal
+});
+
+// Cliente listo
+client.on('ready', () => {
+  console.log('✅ Cliente de WhatsApp listo.');
+});
+
+// Fallo de autenticación
+client.on('auth_failure', (msg) => {
+  console.error('Fallo de autenticación:', msg);
+});
+
+// Desconexión y reconexión automática
+client.on('disconnected', (reason) => {
+  console.log('Cliente desconectado:', reason);
+  console.log('🔄 Reintentando conexión...');
+  client.initialize();
+});
+
+// Controlador para enviar mensajes de WhatsApp
 export const sendWhatsAppMessage = async (req, res) => {
-    try {
-        const { phoneNumber, nombre, correo, contrasenia } = req.body;
+  try {
+    const { to, message } = req.body;
 
-        const response = await axios.post(
-            WHATSAPP_API_URL,
-            {
-                messaging_product: 'whatsapp',
-                to: phoneNumber,
-                type: 'template',
-                template: {
-                    name: 'msg_confirmacion',
-                    language: { code: 'es_MX' },
-                    components: [
-                        {
-                            type: 'body',
-                            parameters: [
-                                { type: 'text', text: nombre },
-                                { type: 'text', text: correo },
-                                { type: 'text', text: contrasenia }
-                            ]
-                        }
-                    ]
-                }
-            },
-            {
-                headers: {
-                    Authorization: `Bearer ${ACCESS_TOKEN}`,
-                    'Content-Type': 'application/json'
-                }
-            }
-        );
-
-        res.status(200).json({
-            success: true,
-            message: 'Mensaje enviado correctamente',
-            data: response.data
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Error al enviar el mensaje',
-            error: error.response ? error.response.data : error.message
-        });
+    if (!to || !message) {
+      return res.status(400).json({ message: 'Número y mensaje son requeridos.' });
     }
+
+    await client.sendMessage(to, message);
+    res.status(200).json({ message: 'Mensaje enviado correctamente.' });
+  } catch (error) {
+    console.error('❌ Error al enviar el mensaje:', error);
+    res.status(500).json({ message: 'Error al enviar el mensaje.', error });
+  }
 };
+
+// Escuchar señales para detener el proceso manualmente
+process.on('SIGINT', async () => {
+  console.log('Deteniendo el cliente de WhatsApp...');
+  await client.destroy();
+  process.exit(0);
+});

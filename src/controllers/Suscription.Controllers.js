@@ -28,7 +28,7 @@ export const getSuscripcionById = async (req, res) => {
 
 export const registerSuscripcion = async (req, res) => {
     try {
-        const { fk_user, fk_Platform, perfil, password, start_date, finish_date, state } = req.body;
+        const { fk_user, fk_Platform, perfil, password, start_date, finish_date, state, phone_user, platform } = req.body;
 
         // Verificar que el usuario existe
         const usuario = await Cliente.findByPk(fk_user);
@@ -50,6 +50,8 @@ export const registerSuscripcion = async (req, res) => {
             start_date,
             finish_date,
             state,
+            phone_user,
+            platform
         });
 
         // Registrar la nueva suscripción en la tabla History
@@ -73,7 +75,7 @@ export const registerSuscripcion = async (req, res) => {
 export const updateSuscripcion = async (req, res) => {
     try {
         const { id_Subscription } = req.params;
-        const { perfil, password, start_date, finish_date, state } = req.body;
+        const { perfil, password, start_date, finish_date, state, phone_user, platform } = req.body;
 
         const suscripcion = await Suscripcion.findByPk(id_Subscription);
 
@@ -86,6 +88,8 @@ export const updateSuscripcion = async (req, res) => {
         suscripcion.start_date = start_date || suscripcion.start_date;
         suscripcion.finish_date = finish_date || suscripcion.finish_date;
         suscripcion.state = state || suscripcion.state;
+        suscripcion.phone_user = phone_user || suscripcion.phone_user;
+        suscripcion.platform = platform || suscripcion.platform;
 
         await suscripcion.save();
 
