@@ -52,7 +52,7 @@ Subscription.init({
         type: DataTypes.STRING(10),
         allowNull: false,
         validate: {
-            isIn: [['Activo', 'Inactivo', 'Cancelado']],
+            isIn: [['ACTIVO', 'INACTIVO', 'CANCELADO']],
         },
     },
     phone_user: {
