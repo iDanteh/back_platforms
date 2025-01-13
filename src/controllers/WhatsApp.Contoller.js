@@ -6,6 +6,7 @@ const { Client, LocalAuth } = pkg;
 
 let io;
 let isAuthenticated = false;
+let qrTimeout;
 
 export const initializeSocket = (serverInstance) => {
   io = new Server(serverInstance, {
@@ -33,33 +34,56 @@ client.initialize();
 
 // Mostrar QR en formato gráfico en la terminal
 client.on('qr', (qr) => {
-  // Solo emite el QR si no está autenticado
   if (!isAuthenticated) {
     console.log('📱 Escanea el siguiente código QR para iniciar sesión:');
-    qrcode.generate(qr, { small: true }); // Genera un QR escaneable en la terminal
+    qrcode.generate(qr, { small: true });
 
     if (io) {
-      io.emit('qr', qr); // Emite el QR para que el frontend lo reciba
+      io.emit('qr', qr); // Emitir QR al frontend
     }
+
+    // Regenerar QR después de 30 segundos si no se autentica
+    clearTimeout(qrTimeout);
+    qrTimeout = setTimeout(() => {
+      console.log('⚠️ QR expirado, regenerando...');
+      client.initialize(); // Re-inicializar cliente para generar un nuevo QR
+    }, 30000);
   }
 });
 
 client.on('ready', () => {
   console.log('✅ Cliente de WhatsApp listo.');
-  isAuthenticated = true; // Marcar como autenticado
+  isAuthenticated = true;
+  clearTimeout(qrTimeout); // Cancelar regeneración de QR si ya está autenticado
+
+  if (io) {
+    io.emit('ready'); // Informar al frontend que el cliente está listo
+  }
 });
 
 // Fallo de autenticación
 client.on('auth_failure', (msg) => {
-  console.error('Fallo de autenticación:', msg);
-  isAuthenticated = false; 
+  console.error('❌ Fallo de autenticación:', msg);
+  isAuthenticated = false;
+  clearTimeout(qrTimeout);
+
+  // Reintentar conexión
+  setTimeout(() => {
+    console.log('🔄 Reintentando autenticación...');
+    client.initialize();
+  }, 5000);
 });
 
 // Desconexión y reconexión automática
 client.on('disconnected', (reason) => {
-  console.log('Cliente desconectado:', reason);
-  console.log('🔄 Reintentando conexión...');
-  client.initialize();
+  console.log('⚠️ Cliente desconectado:', reason);
+  isAuthenticated = false;
+
+  // Reintentar conexión después de una desconexión
+  setTimeout(() => {
+    console.log('🔄 Reintentando conexión...');
+    client.initialize();
+  }, 5000);
 });
 
 // Controlador para enviar mensajes de WhatsApp
