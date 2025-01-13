@@ -1,17 +1,31 @@
+import { Server } from 'socket.io';
 import pkg from 'whatsapp-web.js';
 import qrcode from 'qrcode-terminal';
 
 const { Client, LocalAuth } = pkg;
 
+let io;
+let isAuthenticated = false;
+
+export const initializeSocket = (serverInstance) => {
+  io = new Server(serverInstance, {
+      cors: {
+          origin: '*', // Permitir conexiones desde cualquier origen
+          methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+      },
+  }); // Inicializar socket.io con el servidor de Express
+};
+
 // Configuración del cliente con LocalAuth
 const client = new Client({
   authStrategy: new LocalAuth({
-    clientId: 'backend_platforms',
-  }),
+      clientId: 'backend_platforms',
+  }), 
   puppeteer: {
-    headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  },
+    headless: true, 
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu', '--remote-debugging-port=9222'],
+  }
+  ,
 });
 
 // Inicializar cliente de WhatsApp
@@ -19,18 +33,26 @@ client.initialize();
 
 // Mostrar QR en formato gráfico en la terminal
 client.on('qr', (qr) => {
-  console.log('📱 Escanea el siguiente código QR para iniciar sesión:');
-  qrcode.generate(qr, { small: true }); // Genera un QR escaneable en la terminal
+  // Solo emite el QR si no está autenticado
+  if (!isAuthenticated) {
+    console.log('📱 Escanea el siguiente código QR para iniciar sesión:');
+    qrcode.generate(qr, { small: true }); // Genera un QR escaneable en la terminal
+
+    if (io) {
+      io.emit('qr', qr); // Emite el QR para que el frontend lo reciba
+    }
+  }
 });
 
-// Cliente listo
 client.on('ready', () => {
   console.log('✅ Cliente de WhatsApp listo.');
+  isAuthenticated = true; // Marcar como autenticado
 });
 
 // Fallo de autenticación
 client.on('auth_failure', (msg) => {
   console.error('Fallo de autenticación:', msg);
+  isAuthenticated = false; 
 });
 
 // Desconexión y reconexión automática
