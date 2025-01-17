@@ -42,12 +42,12 @@ client.on('qr', (qr) => {
       io.emit('qr', qr); // Emitir QR al frontend
     }
 
-    // Regenerar QR después de 30 segundos si no se autentica
+    // Regenerar QR después de 2 minutos si no se autentica
     clearTimeout(qrTimeout);
     qrTimeout = setTimeout(() => {
       console.log('⚠️ QR expirado, regenerando...');
       client.initialize(); // Re-inicializar cliente para generar un nuevo QR
-    }, 30000);
+    }, 180000);
   }
 });
 

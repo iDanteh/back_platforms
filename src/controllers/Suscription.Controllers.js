@@ -2,7 +2,7 @@ import Suscripcion from '../models/Suscripcion.Model.js';
 import History from '../models/History.Model.js';
 import Cliente from '../models/User.Model.js';
 import Plataforma from '../models/Platform.Model.js';
-import { where } from 'sequelize';
+import { where, Op } from 'sequelize';
 
 export const getSuscriptions = async (req, res) => {
     try {
@@ -25,6 +25,28 @@ export const getSuscripcionById = async (req, res) => {
         res.status(500).json({ error: 'Error al obtener la Suscripción'});
     }
 }
+
+export const getSubscriptionByName = async (req, res) => {
+    try {
+        const { suscripcion } = req.query;
+
+        const suscripciones = await Suscripcion.findAll({
+            where: {
+                name_user: {
+                    [Op.like]: `%${suscripcion}%`
+                }
+            }
+        });
+
+        if(!suscripciones.length){
+            return res.json([]);
+        }
+
+        res.status(200).json(suscripciones);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al buscar suscripciones por nombre'});
+    }
+};
 
 export const registerSuscripcion = async (req, res) => {
     try {
