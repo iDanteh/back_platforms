@@ -28,23 +28,28 @@ export const getSuscripcionById = async (req, res) => {
 
 export const getSubscriptionByName = async (req, res) => {
     try {
-        const { suscripcion } = req.query;
+        const { name_user } = req.query; 
 
-        const suscripciones = await Suscripcion.findAll({
+        if (!name_user) {
+            return res.status(400).json({ error: 'El nombre de usuario es requerido' });
+        }
+
+        const suscriptions = await Suscripcion.findAll({
             where: {
                 name_user: {
-                    [Op.like]: `%${suscripcion}%`
-                }
-            }
+                    [Op.like]: `%${name_user}%`, 
+                },
+            },
         });
 
-        if(!suscripciones.length){
+        if (!suscriptions.length) {
             return res.json([]);
         }
 
-        res.status(200).json(suscripciones);
+        res.status(200).json(suscriptions);
     } catch (error) {
-        res.status(500).json({ error: 'Error al buscar suscripciones por nombre'});
+        console.error('Error al buscar suscripciones:', error);
+        res.status(500).json({ message: 'Error interno del servidor' });
     }
 };
 
