@@ -14,7 +14,7 @@ const app = express();
 
 // Habilitar CORS para tu aplicación
 const corsOptions = {
-    origin: '*', // Asegúrate de que sea la URL de tu frontend
+    origin: [/http:\/\/localhost:\d+/, 'https://backplatforms-production.up.railway.app'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     allowedHeaders: ['Content-Type'],
 };

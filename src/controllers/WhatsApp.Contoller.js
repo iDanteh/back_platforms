@@ -11,7 +11,7 @@ let qrTimeout;
 export const initializeSocket = (serverInstance) => {
   io = new Server(serverInstance, {
       cors: {
-          origin: '*', // Permitir conexiones desde cualquier origen
+          origin: [/http:\/\/localhost:\d+/, 'https://backplatforms-production.up.railway.app'],
           methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
       },
   }); // Inicializar socket.io con el servidor de Express
